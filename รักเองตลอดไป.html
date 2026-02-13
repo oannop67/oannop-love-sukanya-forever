@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Valentine's Mega Surprise ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    font-family: 'Mali', cursive;
+    background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fecfef, #a18cd1);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* --- Love Timer Style --- */
+  .timer-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin: 15px 0;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+  }
+  .timer-title {
+    font-size: 14px; color: #ff4d6d; margin-bottom: 5px; font-weight: bold;
+  }
+  .timer-time {
+    font-size: 20px; color: #d6336c; font-weight: 800;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  /* --- SYSTEM: Start Overlay & Music/Back Control --- */
+  #start-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+    z-index: 20000; display: flex; flex-direction: column; justify-content: center; align-items: center;
+    transition: opacity 0.5s;
+  }
+  .start-gift { font-size: 80px; margin-bottom: 20px; animation: bounce 2s infinite; cursor: pointer; }
+  @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-30px);} 60% {transform: translateY(-15px);} }
+  
+  .start-btn {
+    background: white; color: #ff4d6d; border: none; padding: 15px 40px; 
+    font-size: 24px; font-weight: bold; border-radius: 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2); cursor: pointer; animation: pulse 1.5s infinite;
+    font-family: 'Mali', cursive;
+  }
+  
+  /* Music Button (Top Right) */
+  #music-control {
+    position: fixed; top: 20px; right: 20px; z-index: 10000;
+    background: rgba(255, 255, 255, 0.8); border-radius: 50%; width: 40px; height: 40px;
+    display: none; justify-content: center; align-items: center;
+    font-size: 20px; cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 2px solid #ff4d6d;
+  }
+
+  /* Back Button (Top Left) */
+  #back-control {
+    position: fixed; top: 20px; left: 20px; z-index: 10000;
+    background: rgba(255, 255, 255, 0.8); border-radius: 50%; width: 40px; height: 40px;
+    display: none; justify-content: center; align-items: center;
+    font-size: 24px; cursor: pointer; color: #ff4d6d;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1); border: 2px solid #ff4d6d;
+    transition: transform 0.2s;
+  }
+  #back-control:active { transform: scale(0.9); }
+
+  /* --- Common Styles --- */
+  .screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: transparent;
+    display: none; flex-direction: column;
+    justify-content: center; align-items: center; z-index: 20;
+    padding: 20px; box-sizing: border-box;
+  }
+  .btn {
+    background: linear-gradient(to right, #ff4d6d, #ff8fab);
+    color: white; border: none; padding: 14px 30px;
+    border-radius: 30px; font-size: 18px; font-weight: bold; cursor: pointer;
+    margin-top: 25px; box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4); transition: transform 0.1s;
+    font-family: 'Mali', cursive;
+  }
+  .btn:active { transform: scale(0.95); }
+  
+  .btn-next {
+    display: none; background: white; color: #ff4d6d; border: 2px solid #ff4d6d;
+    animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  /* --- ด่าน 1: Scratch --- */
+  .scratch-container { 
+    position: relative; width: 300px; height: 300px; z-index: 10; 
+    margin-top: 20px; display: flex; justify-content: center; align-items: center;
+  }
+  #scratch-canvas {
+    position: absolute; top: 0; left: 0; cursor: crosshair;
+    border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    z-index: 11; touch-action: none; transition: opacity 1s ease-out;
+  }
+  #to-flower-btn {
+    display: none; margin-top: 30px; z-index: 100; white-space: nowrap;
+    animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  @keyframes popUp { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+  /* --- ด่าน 2: Flower Game --- */
+  #flower-game-screen { overflow: hidden; }
+  .falling-flower {
+    position: absolute; font-size: 40px; cursor: pointer;
+    animation: fall linear forwards; z-index: 50; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  }
+  @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+  #score-board { font-size: 24px; color: #ff4d6d; font-weight: bold; margin-bottom: 20px; background: rgba(255,255,255,0.8); padding: 10px 20px; border-radius: 15px; }
+
+  /* --- ด่าน 3: Letter --- */
+  .envelope-wrapper {
+    position: relative; transform: scale(1); cursor: pointer; 
+    transition: all 0.5s; z-index: 5; margin-top: 80px; 
+  }
+  .envelope { 
+    position: relative; width: 300px; height: 200px; 
+    background: #ff4d6d; border-radius: 0 0 10px 10px; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+  }
+  .envelope::before {
+    content: ""; position: absolute; top: -110px; left: 0;
+    border-left: 150px solid transparent; border-right: 150px solid transparent;
+    border-bottom: 110px solid #ff4d6d; z-index: 5; transition: transform 0.5s; transform-origin: bottom;
+  }
+  .letter {
+    position: absolute; bottom: 10px; left: 15px; width: 270px; height: 180px;
+    background: white; padding: 20px 15px; box-sizing: border-box; 
+    transition: transform 0.6s ease-in-out, height 0.6s ease-in-out;
+    z-index: 2; border-radius: 5px; 
+    display: flex; flex-direction: column; justify-content: flex-start; align-items: center;
+    overflow-y: auto; 
+  }
+  .opened .envelope::before { transform: rotateX(180deg); z-index: 1; }
+  
+  .opened .letter { 
+    transform: translateY(-120px); 
+    height: 340px; 
+    z-index: 10; 
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.15); 
+  }
+  
+  #text { font-size: 15px; color: #ff4d6d; font-weight: bold; white-space: pre-wrap; line-height: 1.6; width: 100%; margin-top: 10px; font-family: 'Mali', cursive; }
+  #letter-hint { margin-top: 40px; }
+  
+  /* --- ด่านอื่นๆ --- */
+  #meter-bar { width: 80%; max-width: 300px; height: 35px; border: 4px solid white; border-radius: 20px; overflow: visible; margin: 20px 0; background: rgba(255,255,255,0.5); position: relative; }
+  #meter-fill { width: 0%; height: 100%; background: linear-gradient(to right, #ff4d6d, #ff8fab); transition: width 0.1s; border-radius: 14px; }
+
+  /* CSS สำหรับหัวใจที่พุ่งออกจากหลอด */
+  .meter-explosion-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100;
+    animation: floatUpMeter 2.5s ease-out forwards;
+    filter: drop-shadow(0 2px 4px rgba(255,255,255,0.5));
+  }
+  @keyframes floatUpMeter {
+    0% { transform: translateY(0) scale(0.5); opacity: 1; }
+    50% { transform: translateY(-150px) scale(1.2); opacity: 0.8; }
+    100% { transform: translateY(-300px) scale(1); opacity: 0; }
+  }
+
+  /* สไตล์ฟรุ้งฟริ้งตอนหลอดเต็ม */
+  .sparkle-bar {
+    background: linear-gradient(90deg, #ff4d6d, #ff9a9e, #ffffff, #ff9a9e, #ff4d6d) !important;
+    background-size: 200% auto !important;
+    animation: shimmer 1s linear infinite, glowPulse 0.8s ease-in-out infinite alternate !important;
+  }
+  @keyframes shimmer { to { background-position: 200% center; } }
+  @keyframes glowPulse {
+    from { box-shadow: 0 0 5px #ff4d6d, 0 0 10px #ff8fab; filter: brightness(1); }
+    to { box-shadow: 0 0 20px #ff4d6d, 0 0 35px #ffffff; filter: brightness(1.3); }
+  }
+
+  .box-container { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+  .mystery-box {
+    width: 85px; height: 85px; background: white; border-radius: 15px;
+    display: flex; justify-content: center; align-items: center;
+    font-size: 30px; cursor: pointer; color: #ff4d6d;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1); transition: transform 0.3s;
+  }
+  .mystery-box:hover { transform: scale(1.1); }
+  .mystery-box.opened-box { background: #ff4d6d; color: white; font-size: 14px; font-weight: bold; text-align: center; padding: 5px; border: 2px solid white; }
+
+  /* --- Styles สำหรับ Games --- */
+  #grid-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 20px; }
+  .emoji-item { font-size: 30px; cursor: pointer; user-select: none; transition: transform 0.2s; }
+  .emoji-item:active { transform: scale(1.3); }
+
+  .quiz-btn { width: 80%; margin: 10px 0; background: white; color: #ff4d6d; border: 2px solid #ff4d6d; font-family: 'Mali', cursive; }
+  .quiz-btn:hover { background: #ffe6eb; }
+
+  #catch-area {
+    position: relative; width: 300px; height: 300px;
+    border: 2px dashed #ff8fab; border-radius: 15px; margin-top: 20px;
+    overflow: hidden; background: rgba(255,255,255,0.3);
+  }
+  #moving-heart { position: absolute; font-size: 40px; cursor: pointer; transition: all 0.3s ease-out; z-index: 10; }
+  
+  #fake-heart { position: absolute; font-size: 40px; cursor: pointer; transition: all 0.3s ease-out; z-index: 10; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+  .shake-area { animation: shake 0.3s ease-in-out; }
+
+  .slider-container { 
+    width: 85%; max-width: 320px; margin: 30px auto; 
+    position: relative; height: 50px; display: flex; align-items: center; justify-content: center;
+  }
+  input[type=range] {
+    -webkit-appearance: none; width: 100%; height: 50px;
+    background: #f0f0f0; border-radius: 25px; outline: none;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1); transition: background 0.1s; cursor: pointer; z-index: 2;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 46px; height: 46px; border-radius: 50%; background: white; 
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.5); border: 2px solid #ff4d6d;
+    cursor: grab; transition: transform 0.2s, box-shadow 0.2s; position: relative; z-index: 5; margin-left: 2px;
+  }
+  input[type=range]:active::-webkit-slider-thumb { transform: scale(1.1); box-shadow: 0 0 20px rgba(255, 77, 109, 0.8); background: #fff0f3; }
+  .slider-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: #999; font-weight: bold; font-size: 16px;
+    pointer-events: none; white-space: nowrap; z-index: 3; transition: opacity 0.2s; letter-spacing: 1px;
+    font-family: 'Mali', cursive;
+  }
+  .slider-success-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+    color: white; font-weight: bold; font-size: 18px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    z-index: 4; pointer-events: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: 'Mali', cursive;
+  }
+  .slider-container.unlocked .slider-success-text { transform: translate(-50%, -50%) scale(1); }
+
+  /* --- Game 5: Wheel Styling --- */
+  #wheelCanvas {
+    border-radius: 50%;
+    border: 8px solid white;
+    box-shadow: 0 8px 25px rgba(255, 77, 109, 0.3);
+    background-color: white;
+    width: 300px;
+    height: 300px;
+  }
+
+  /* --- Coupon Pop-up Style --- */
+  #coupon-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); z-index: 15000;
+    display: none; justify-content: center; align-items: center;
+    backdrop-filter: blur(5px);
+  }
+  .coupon-card {
+    background: white; width: 85%; max-width: 300px; padding: 30px 20px;
+    border-radius: 20px; text-align: center; position: relative;
+    border: 4px dashed #ff4d6d; animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  .coupon-card h3 { color: #ff4d6d; margin: 0; font-size: 24px; }
+  .prize-text { font-size: 20px; margin: 20px 0; font-weight: bold; color: #333; }
+
+  /* --- Final Screen --- */
+  .big-heart-anim {
+    font-size: 80px; margin-bottom: 10px;
+    animation: heartBeat 1.2s infinite ease-in-out;
+    filter: drop-shadow(0 5px 15px rgba(255, 77, 109, 0.5));
+  }
+  @keyframes heartBeat {
+    0% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(1); }
+    45% { transform: scale(1.1); } 60% { transform: scale(1); } 100% { transform: scale(1); }
+  }
+  
+  .final-title { font-size: 28px; color: #ff4d6d; margin: 0; text-shadow: 2px 2px 0px white; }
+  .final-sub { font-size: 20px; color: #d6336c; margin-top: 10px; font-weight: bold; }
+
+  .btn-group { position: relative; width: 100%; height: 250px; margin-top: 20px; display: flex; justify-content: center; }
+  
+  #yes-btn {
+    position: absolute; z-index: 100; font-size: 22px; padding: 15px 50px;
+    background: linear-gradient(45deg, #ff0055, #ff4d6d);
+    box-shadow: 0 0 20px rgba(255, 0, 85, 0.4); animation: pulseBtn 2s infinite;
+    cursor: pointer; border: none; border-radius: 30px; color: white; font-weight: bold;
+    font-family: 'Mali', cursive;
+  }
+  @keyframes pulseBtn {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 77, 109, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0); }
+  }
+  
+  #no-btn { 
+    position: absolute; z-index: 200; background: #bbb; font-size: 16px; padding: 10px 20px;
+    color: white; border: none; border-radius: 30px; top: 100px; cursor: pointer;
+    transition: left 0.2s ease, top 0.2s ease;
+    font-family: 'Mali', cursive;
+  }
+  
+  .btn-surrender {
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) !important;
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4) !important;
+    color: white !important;
+    font-weight: bold !important;
+    box-shadow: 0 0 15px rgba(255, 154, 158, 0.8) !important;
+    z-index: 1000 !important;
+    cursor: pointer !important;
+    animation: surrenderHeartbeat 1s infinite alternate;
+  }
+  @keyframes surrenderHeartbeat {
+    from { box-shadow: 0 0 10px rgba(255, 77, 109, 0.5); transform: translate(-50%, 0) scale(1.1); }
+    to { box-shadow: 0 0 25px rgba(255, 77, 109, 1); transform: translate(-50%, 0) scale(1.2); }
+  }
+
+  .mini-heart-explosion {
+    position: fixed;
+    font-size: 20px;
+    pointer-events: none;
+    animation: popOut 0.8s ease-out forwards;
+    z-index: 10002;
+  }
+  @keyframes popOut {
+    0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
+  }
+
+  /* Success Overlay */
+  #success-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.98); z-index: 10000;
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    animation: fadeIn 0.5s; touch-action: none; overscroll-behavior: none;
+  }
+  
+  .floating-heart { 
+    position: absolute; color: #ff8fab; pointer-events: none; 
+    animation: moveUp 4s ease-in forwards; text-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    z-index: 10; 
+  }
+  .final-heart { z-index: 10001 !important; }
+  .success-content { position: relative; z-index: 10005; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .success-content h1 { font-size: 40px; color: #ff4d6d; margin: 0; animation: popUp 0.5s 0.2s backwards; }
+  .success-content p { font-size: 20px; color: #555; margin-top: 10px; animation: popUp 0.5s 0.4s backwards; }
+  
+  @keyframes moveUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-110vh) scale(1.5); opacity: 0; } }
+  #memory-box { background: white; padding: 30px; border-radius: 20px; width: 80%; max-width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+</style>
+</head>
+<body>
+
+<audio id="bgm" loop>
+  <source src="https://files.catbox.moe/xlik0y.mp3" type="audio/mpeg">
+</audio>
+
+<div id="start-overlay">
+  <div class="start-gift" onclick="enterSite()">🎁</div>
+  <h1 style="color: white; text-shadow: 0 2px 5px rgba(0,0,0,0.2);">มีของขวัญจะให้...</h1>
+  <button class="start-btn" onclick="enterSite()">กดเพื่อเปิดดูเลย ❤️</button>
+  <p style="color: white; opacity: 0.8; margin-top: 20px; font-size: 14px;">(เปิดเสียงด้วยนะ)</p>
+</div>
+
+<div id="back-control" onclick="goBack()">⬅️</div>
+<div id="music-control" onclick="toggleMusic()">🔊</div>
+
+<div id="scratch-screen" class="screen">
+  <h2 style="color: #ff4d6d; font-size: 24px; text-shadow: 0 2px 4px rgba(255,255,255,0.5);">✨ ขูดสีเงินเพื่อเริ่มภารกิจรัก ✨</h2>
+  <div class="scratch-container">
+    <div style="position: absolute; top:0; left:0; width:100%; height:100%; display:flex; justify-content:center; align-items:center; color:#ff4d6d; font-size:24px; font-weight:bold; z-index:1; border-radius:20px; background: rgba(255,255,255,0.3);">
+       <div style="display:flex; flex-direction:column; align-items:center;">
+          <span style="font-size:60px;">💖</span>
+          <span style="margin-top:10px;">พร้อมจะไปต่อรึยัง?</span>
+       </div>
+    </div>
+    <canvas id="scratch-canvas"></canvas>
+  </div>
+  <button id="to-flower-btn" class="btn" onclick="startFlowerGame()">🌸 สะอาดแล้ว! กดไปต่อเลย 👉</button>
+</div>
+
+<div id="flower-game-screen" class="screen">
+  <h2 id="flower-title" style="color: #ff4d6d;">ภารกิจ: เก็บดอกไม้ 5 ดอก! 🌸</h2>
+  <div id="score-board">ได้แล้ว: <span id="flower-score">0</span> / 5</div>
+  <div id="flower-area"></div>
+  <button id="flower-next-btn" class="btn btn-next" onclick="nextScreen('letter-screen')">เก่งมาก! ไปอ่านจดหมายกัน 👉</button>
+</div>
+
+<div id="letter-screen" class="screen">
+  <h2 id="letter-title" style="color: #ff4d6d; font-size: 26px; margin-bottom: 50px; text-shadow: 0 2px 4px rgba(255,255,255,0.5);">ปลดล็อกจดหมายแล้ว! 💌</h2>
+  <div class="envelope-wrapper" id="envelopeBox" onclick="openLetter()">
+    <div class="envelope">
+      <div class="letter">
+        <div id="text">แตะที่จดหมายเลย... ❤️</div>
+      </div>
+    </div>
+  </div>
+  <p id="letter-hint" style="margin-top: 60px; color: #ff4d6d; opacity: 0.7; font-size: 16px;">(แตะที่ซองเพื่ออ่านความในใจ)</p>
+</div>
+
+<div id="memory-screen" class="screen">
+  <h2 style="color: #ff4d6d;">ความในใจของเค้า... ✨</h2>
+  <div id="memory-box">
+    <p id="memory-text" style="color: #555; font-size: 20px;">รู้มั้ยว่ารอยยิ้มเองสวยที่สุดเลย</p>
+  </div>
+  <button class="btn" onclick="nextMemory()">ดูอีกข้อความ 💕</button>
+  <button class="btn" style="background: white; color: #ff4d6d; border: 2px solid #ff4d6d;" onclick="nextScreen('meter-screen')">ไปด่านต่อไป 👉</button>
+</div>
+
+<div id="meter-screen" class="screen">
+  <h2 id="meter-title" style="color: #ff4d6d;">เติมรักให้เต็มถัง! ❤️</h2>
+  <p id="meter-desc" style="color:#ff4d6d; font-weight:bold;">กดปุ่มรัวๆ ยิ่งเร็วยิ่งดี!</p>
+  <div id="meter-bar"><div id="meter-fill"></div></div>
+  <button id="tap-btn" class="btn" onclick="fillMeter()">กดรัวๆ ตรงนี้! 🔥</button>
+  <button id="meter-next-btn" class="btn btn-next" onclick="nextScreen('gallery-screen')">เต็มแล้ว! ไปดูความลับกัน 👉</button>
+</div>
+
+<div id="gallery-screen" class="screen">
+  <h2 style="color: #ff4d6d;">เลือกกล่องสุ่มความรู้สึก 🎁</h2>
+  <p style="color:#ff4d6d;">เปิดให้ครบทุกกล่องนะ</p>
+  <div class="box-container">
+    <div class="mystery-box" onclick="openBox(this, 'อยากดูแล')">?</div>
+    <div class="mystery-box" onclick="openBox(this, 'คนนี้พอ')">?</div>
+    <div class="mystery-box" onclick="openBox(this, 'ตลอดไป')">?</div>
+  </div>
+  <button id="to-final-btn" class="btn" style="display: none;" onclick="initGame1(); nextScreen('game1-screen')">ไปด่านต่อไป... 👉</button>
+</div>
+
+<div id="game1-screen" class="screen">
+  <h2 style="color: #ff4d6d;">ภารกิจตามหาหัวใจ 🧐</h2>
+  <p style="color:#555;">ไหน...หัวใจเค้าอยู่ไหน? 💖</p>
+  <div id="grid-container"></div>
+  <button id="btn-next-game1" class="btn btn-next" onclick="nextScreen('game2-screen')">เจอแล้ว! ไปข้อต่อไป 👉</button>
+</div>
+
+<div id="game2-screen" class="screen">
+  <h2 style="color: #ff4d6d;">คำถามวัดใจ ❤️ รักใครมากสุด</h2>
+  <button class="btn quiz-btn" onclick="wrongAnswer(this, 'ผิด! เพื่อนร่วมโลกเฉยๆ 😜')">คนข้างบ้าน</button>
+  <button class="btn quiz-btn" onclick="wrongAnswer(this, 'ผิด! แมวรักปลาทูจ้ะ 🐱')">แมวที่บ้าน</button>
+  <button class="btn quiz-btn" onclick="correctAnswer(this)">เค้าเอง! (อรรนพ) 🙋‍♂️</button>
+  <button class="btn quiz-btn" onclick="wrongAnswer(this, 'ผิด! เขาไม่รู้จักเอง 😂')">ดาราจีน</button>
+  <button id="btn-next-game2" class="btn btn-next" onclick="nextScreen('game3-screen'); initGame3();">ถูกต้อง! เก่งนะเนี่ย 👉</button>
+</div>
+
+<div id="game3-screen" class="screen">
+  <h2 id="catch-title" style="color: #ff4d6d;">จับรักให้อยู่หมัด 💨</h2>
+  <p>จิ้มหัวใจ 💖 ให้ครบ 5 ครั้ง (ระวัง 💔 นะ!)</p>
+  <div style="font-size:20px; color:#ff4d6d; font-weight:bold;">Score: <span id="catch-score">0</span>/5</div>
+  <div id="catch-area">
+    <div id="moving-heart" onclick="catchHeart()">💖</div>
+  </div>
+  <button id="btn-next-game3" class="btn btn-next" onclick="nextScreen('game4-screen')">จับได้แล้ว! สุดยอดเลย 👉</button>
+</div>
+
+<div id="game4-screen" class="screen">
+  <h2 style="color: #ff4d6d;">ปลดล็อกความในใจ 🔓</h2>
+  <p>เลื่อนให้สุด เพื่อเปิดประตูรัก</p>
+  <div class="slider-container">
+    <div class="slider-text">เลื่อนไปขวาสุด >>></div>
+    <div class="slider-success-text">เปิดประตูแล้ว! 💕</div> 
+    <input type="range" min="0" max="100" value="0" id="love-slider" oninput="checkSlider(this)">
+  </div>
+  <button id="btn-next-game4" class="btn btn-next" onclick="nextScreen('game5-screen')">เปิดประตูหัวใจ! 🚪💕</button>
+</div>
+
+<div id="game5-screen" class="screen">
+  <h2 style="color: #ff4d6d;">🎡 วงล้อลุ้นรางวัล 🎡</h2>
+  <p style="color: #555;">หมุนเพื่อรับของขวัญจากเค้า!</p>
+  <div style="position: relative; margin: 20px 0;">
+    <div style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid #ff4d6d; z-index: 100;"></div>
+    <canvas id="wheelCanvas"></canvas>
+  </div>
+  <button id="spin-btn" class="btn" onclick="spinWheel()">หมุนวงล้อเลย 💖</button>
+  <p id="wheelResult" style="margin-top:20px; font-size:18px; color:#ff4d6d; font-weight:bold;"></p>
+  <button id="btn-next-game5" class="btn btn-next" onclick="nextScreen('final-screen')">ไปด่านสุดท้าย... ❤️</button>
+</div>
+
+<div id="coupon-overlay">
+  <div class="coupon-card">
+    <h3>🎟️ ยินดีด้วยจ้า!</h3>
+    <p>คุณได้รับคูปอง:</p>
+    <div id="prize-display" class="prize-text"></div>
+    <button class="btn" onclick="collectCoupon()">กดรับคูปอง 🎁</button>
+    <p style="font-size:12px; color:#999; margin-top:15px;">*อย่าลืมแคปหน้าจอไว้นะ*</p>
+  </div>
+</div>
+
+<div id="final-screen" class="screen">
+  <div class="big-heart-anim">💗</div>
+  <h1 class="final-title">Valentine นี้...</h1>
+  <p class="final-sub">ขอให้เราอยู่ด้วยกันแบบนี้ไปนานๆนะ 🌹</p>
+  
+  <div class="timer-box">
+    <div class="timer-title">เรารักกันมานาน:</div>
+    <div class="timer-time" id="love-timer">กำลังคำวณ...</div>
+  </div>
+  <div class="btn-group">
+    <button id="yes-btn" onclick="sayYes()">ตกลง! รักนะ 💖</button>
+    <button id="no-btn" onmouseover="moveNo(event)" ontouchstart="moveNo(event)" onclick="moveNo(event)">ขอคิดดูก่อน 😜</button>
+  </div>
+</div>
+
+<div id="success-overlay">
+  <div class="success-content">
+    <h1>เย้! ขอบคุณนะ 👩‍❤️‍👨</h1>
+    <p>ขอให้ความรักของเราอบอุ่นแบบนี้ตลอดไป 🌸</p>
+    <div style="font-size: 60px; margin-top: 20px; animation: heartBeat 1s infinite;">❤️</div>
+  </div>
+</div>
+
+<script>
+/* --- SYSTEM: Audio & Start Logic --- */
+function enterSite() {
+  const audio = document.getElementById("bgm");
+  const overlay = document.getElementById("start-overlay");
+  updateLoveTimer();
+  setInterval(updateLoveTimer, 1000);
+  audio.volume = 0.5;
+  audio.currentTime = 0; 
+  let playPromise = audio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(_ => console.log("Audio started."))
+    .catch(error => console.log("Audio failed:", error));
+  }
+  overlay.style.opacity = '0';
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    document.getElementById('scratch-screen').style.display = 'flex';
+    document.getElementById('music-control').style.display = 'flex';
+    initScratch();
+  }, 500);
+}
+
+function updateLoveTimer() {
+    const startDate = new Date("2019-05-10T00:00:00"); 
+    const now = new Date();
+    let years = now.getFullYear() - startDate.getFullYear();
+    let months = now.getMonth() - startDate.getMonth();
+    let days = now.getDate() - startDate.getDate();
+    if (days < 0) {
+        months--;
+        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+    }
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+    const timerText = `${years} ปี ${months} เดือน ${days} วัน`;
+    const el = document.getElementById("love-timer");
+    if(el) el.innerText = timerText;
+}
+
+function toggleMusic() {
+  var audio = document.getElementById("bgm");
+  var btn = document.getElementById("music-control");
+  if (audio.paused) {
+    audio.play(); btn.innerHTML = "🔊";
+  } else {
+    audio.pause(); btn.innerHTML = "🔇";
+  }
+}
+
+/* --- NAVIGATION LOGIC --- */
+let historyStack = [];
+
+function nextScreen(targetId) {
+  const current = document.querySelector('.screen[style*="display: flex"]');
+  if (current) historyStack.push(current.id);
+  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+  document.getElementById(targetId).style.display = 'flex';
+  updateBackButton(targetId);
+}
+
+function goBack() {
+  if (historyStack.length === 0) return;
+  const prevId = historyStack.pop();
+  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+  document.getElementById(prevId).style.display = 'flex';
+  updateBackButton(prevId);
+}
+
+function updateBackButton(currentId) {
+  const btn = document.getElementById('back-control');
+  if (currentId === 'scratch-screen' || currentId === 'success-overlay') {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'flex';
+  }
+}
+
+/* --- 1. Scratch Logic --- */
+const canvas = document.getElementById('scratch-canvas');
+const ctx = canvas.getContext('2d');
+let isDrawing = false;
+let isScratchedCompleted = false; 
+
+function initScratch() {
+  canvas.width = 300; canvas.height = 300;
+  const grd = ctx.createLinearGradient(0, 0, 300, 300);
+  grd.addColorStop(0, "#DCDCDC"); grd.addColorStop(0.3, "#F8F8F8");
+  grd.addColorStop(0.5, "#DCDCDC"); grd.addColorStop(0.8, "#F8F8F8");
+  grd.addColorStop(1, "#DCDCDC");
+  ctx.fillStyle = grd; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#999'; ctx.font = 'bold 24px Mali'; ctx.textAlign = 'center';
+  ctx.shadowColor = "white"; ctx.shadowBlur = 2;
+  ctx.fillText('✨ ขูดตรงนี้เลย ✨', 150, 140);
+  ctx.font = '16px Mali'; ctx.fillText('(ใช้นิ้วถูๆ)', 150, 170); ctx.shadowBlur = 0;
+}
+
+function scratch(e) {
+  if (!isDrawing || isScratchedCompleted) return;
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+  const y = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.lineWidth = 60; ctx.lineCap = 'round';
+  ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+  if (Math.random() > 0.8) checkScratchPercent();
+}
+
+function checkScratchPercent() {
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const pixels = imageData.data;
+  let transparentPixels = 0;
+  for (let i = 3; i < pixels.length; i += 16) { if (pixels[i] === 0) transparentPixels++; }
+  if (transparentPixels / (pixels.length / 16) > 0.6) {
+    isScratchedCompleted = true;
+    document.getElementById('to-flower-btn').style.display = 'inline-block';
+    canvas.style.opacity = '0'; canvas.style.pointerEvents = 'none'; 
+  }
+}
+
+canvas.addEventListener('mousedown', () => isDrawing = true);
+window.addEventListener('mouseup', () => { isDrawing = false; ctx.beginPath(); });
+canvas.addEventListener('mousemove', scratch);
+canvas.addEventListener('touchstart', () => isDrawing = true);
+canvas.addEventListener('touchend', () => { isDrawing = false; ctx.beginPath(); });
+canvas.addEventListener('touchmove', scratch);
+
+/* --- 2. Flower Game --- */
+let flowerScore = 0, flowerInterval;
+function startFlowerGame() {
+  nextScreen('flower-game-screen');
+  if(flowerInterval) clearInterval(flowerInterval); 
+  flowerInterval = setInterval(createFallingFlower, 600);
+}
+function createFallingFlower() {
+  if(flowerScore >= 5) return;
+  const flower = document.createElement('div');
+  flower.innerText = ['🌸','🌹','🌻','🌷'][Math.floor(Math.random()*4)];
+  flower.className = 'falling-flower';
+  flower.style.left = Math.random() * 80 + 10 + '%';
+  flower.style.top = '-50px';
+  flower.style.animationDuration = (Math.random() * 2 + 2) + 's'; 
+  flower.onclick = function() {
+    flowerScore++;
+    document.getElementById('flower-score').innerText = flowerScore;
+    createHeart();
+    this.remove();
+    if(flowerScore >= 5) {
+      clearInterval(flowerInterval);
+      document.getElementById('flower-title').innerText = "ครบแล้ว! เย้! 🎉";
+      document.getElementById('flower-next-btn').style.display = 'inline-block';
+    }
+  };
+  document.getElementById('flower-area').appendChild(flower);
+  setTimeout(() => { if(flower.parentNode) flower.remove(); }, 4000);
+}
+
+/* --- 3. Letter Logic --- */
+let isOpened = false;
+function openLetter() {
+  if (isOpened) return;
+  document.getElementById('letter-title').style.display = 'none';
+  document.getElementById('letter-hint').style.display = 'none';
+  document.getElementById('envelopeBox').classList.add('opened');
+  isOpened = true;
+  setTimeout(() => {
+    typeWriter("Happy Valentine's Day! 💖\n\n" +
+    "ยินดีด้วย! คุณคือผู้โชคดีที่ได้แฟนหล่อขนาดนี้\n" +
+    "หยอกๆ 555 ขอบคุณนะที่รักเค้า\n" +
+    "ถึงเค้าจะดื้อไปหน่อย แต่ก็รักเองคนเดียวนะ\n" +
+    "อย่าเพิ่งเบื่อหน้ากันซะก่อนล่ะ\n" +
+    "เตรียมเกมไว้ให้เล่นด้วยแหล่ะ!\n" +
+    "รักนะเด็กโง่ 😜\n\n" +
+    "- จาก อรรนพสุดหล่อ -\n\n" +
+    "(กดข้อความนี้เพื่อไปต่อ)", "text", () => {
+        document.getElementById('text').style.cursor = 'pointer';
+        document.getElementById('text').onclick = () => nextScreen('memory-screen');
+    });
+  }, 600);
+}
+function typeWriter(text, elementId, callback) {
+  const elem = document.getElementById(elementId);
+  elem.innerText = ""; let i = 0;
+  function typing() {
+    if (i < text.length) { elem.innerText += text.charAt(i); i++; setTimeout(typing, 50); }
+    else if (callback) callback();
+  }
+  typing();
+}
+
+/* --- Other Logic --- */
+const memories = ["ชอบเวลาเองหัวเราะ", "ขอบคุณที่ทนนิสัยเค้านะ 555","บ่นเก่งที่ 1","เลี้ยงข้าวที","เค้ามันของแรร์","ขอกอดแน่นๆ","เจ้าความรัก","ยัยตัวแสบ","งื้ออออ", "เองคือความสบายใจของเค้า", "เค้าโชคดีมากที่มีเอง","อยู่กับเองมีความสุขสุด", "สัญญาว่าจะดื้อให้น้อยลงนะ", "เก่งที่สุดแล้วคนนี้", "เติบโตไปด้วยกันนะ", "รักเองนะ", "อย่าเพิ่งเบื่อกันนะ"];
+let memoryIndex = 0;
+function nextMemory() {
+  memoryIndex = (memoryIndex + 1) % memories.length;
+  document.getElementById('memory-text').innerText = memories[memoryIndex];
+}
+
+/* --- UPDATED METER LOGIC WITH EXPLOSION FROM BAR --- */
+let meterValue = 0;
+function fillMeter() {
+  if (meterValue < 100) {
+    meterValue += 8; 
+    
+    const fillBar = document.getElementById('meter-fill');
+    fillBar.style.width = meterValue + '%';
+    
+    // Create regular floating hearts while tapping
+    createHeart(); 
+
+    if (meterValue >= 100) {
+      fillBar.style.width = '100%';
+      fillBar.classList.add('sparkle-bar'); 
+
+      document.getElementById('meter-title').innerText = "รักล้นจอแล้ว! 💖✨";
+      document.getElementById('tap-btn').style.display = 'none';
+      document.getElementById('meter-desc').style.display = 'none'; 
+      document.getElementById('meter-next-btn').style.display = 'inline-block';
+      
+      // *** Trigger the Explosion from the bar ***
+      spawnHeartsFromMeter();
+    }
+  }
+}
+
+// Function to spawn hearts specifically from the meter bar
+function spawnHeartsFromMeter() {
+  const meter = document.getElementById('meter-bar');
+  const rect = meter.getBoundingClientRect(); // Get position of the bar
+  const heartTypes = ['❤️', '💖', '💕', '💗', '💓'];
+  
+  // Spawn 30 hearts
+  for (let i = 0; i < 30; i++) {
+    setTimeout(() => {
+      const heart = document.createElement('div');
+      heart.innerText = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+      heart.className = 'meter-explosion-heart';
+      
+      // Calculate random X position within the bar width
+      const randomX = Math.random() * rect.width;
+      
+      // Set Start Position (Fixed based on screen)
+      heart.style.left = (rect.left + randomX) + 'px';
+      heart.style.top = rect.top + 'px'; // Start from top of bar
+      
+      // Randomize size slightly
+      heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+      
+      // Randomize animation speed slightly
+      heart.style.animationDuration = (Math.random() * 1 + 2) + 's';
+
+      document.body.appendChild(heart);
+      
+      // Clean up
+      setTimeout(() => heart.remove(), 2500);
+    }, i * 40); // Stagger creation slightly
+  }
+}
+
+let boxesOpened = 0;
+function openBox(element, text) {
+  if(element.classList.contains('opened-box')) return;
+  element.classList.add('opened-box'); element.innerText = text;
+  boxesOpened++; createHeart();
+  if(boxesOpened === 3) document.getElementById('to-final-btn').style.display = 'inline-block';
+}
+
+/* --- NEW GAMES LOGIC --- */
+function initGame1() {
+  document.getElementById('btn-next-game1').style.display = 'none';
+  const container = document.getElementById('grid-container');
+  container.innerHTML = '';
+  let winnerIndex = Math.floor(Math.random() * 25);
+  for(let i=0; i<25; i++) {
+    let div = document.createElement('div');
+    div.className = 'emoji-item'; div.innerText = '❓';
+    if(i === winnerIndex) {
+      div.onclick = function() {
+        this.innerText = '💖'; createHeart();
+        document.getElementById('btn-next-game1').style.display = 'inline-block';
+      };
+    } else {
+      div.onclick = function() { this.innerText = '❌'; };
+    }
+    container.appendChild(div);
+  }
+}
+
+function correctAnswer(btn) {
+  btn.style.background = '#32CD32'; btn.style.borderColor = '#32CD32';
+  btn.innerHTML = 'ถูกต้อง! รักที่สุด ❤️'; createHeart();
+  document.getElementById('btn-next-game2').style.display = 'inline-block';
+}
+function wrongAnswer(btn, msg) {
+  btn.style.background = '#999'; btn.style.borderColor = '#999';
+  btn.innerHTML = msg; btn.style.transform = 'scale(0.95)';
+  setTimeout(() => { btn.style.transform = 'scale(1)'; }, 200);
+}
+
+let catchScore = 0;
+function initGame3() {
+  catchScore = 0; 
+  document.getElementById('catch-score').innerText = '0';
+  document.getElementById('btn-next-game3').style.display = 'none';
+  document.getElementById('moving-heart').style.display = 'block';
+  
+  if (!document.getElementById('fake-heart')) {
+    const fake = document.createElement('div');
+    fake.id = 'fake-heart';
+    fake.innerHTML = '💔';
+    fake.onclick = catchFakeHeart;
+    document.getElementById('catch-area').appendChild(fake);
+  }
+  document.getElementById('fake-heart').style.display = 'block';
+  moveHeartRandom();
+}
+
+function moveHeartRandom() {
+  const heart = document.getElementById('moving-heart');
+  const fake = document.getElementById('fake-heart');
+  const area = document.getElementById('catch-area');
+  const maxLeft = area.clientWidth - 50;
+  const maxTop = area.clientHeight - 50;
+  heart.style.left = Math.random() * maxLeft + 'px';
+  heart.style.top = Math.random() * maxTop + 'px';
+  fake.style.left = Math.random() * maxLeft + 'px';
+  fake.style.top = Math.random() * maxTop + 'px';
+}
+
+function catchHeart() {
+  catchScore++; 
+  document.getElementById('catch-score').innerText = catchScore; 
+  createHeart();
+  if(catchScore >= 5) {
+    document.getElementById('catch-title').innerText = "จับรักได้แล้ว! 🥰";
+    document.getElementById('moving-heart').style.display = 'none'; 
+    document.getElementById('fake-heart').style.display = 'none';
+    document.getElementById('btn-next-game3').style.display = 'inline-block';
+  } else { 
+    moveHeartRandom(); 
+  }
+}
+
+function catchFakeHeart() {
+  if (catchScore > 0) {
+    catchScore--;
+    document.getElementById('catch-score').innerText = catchScore;
+  }
+  const area = document.getElementById('catch-area');
+  area.classList.add('shake-area');
+  setTimeout(() => area.classList.remove('shake-area'), 300);
+  moveHeartRandom();
+}
+
+function checkSlider(slider) {
+  let val = slider.value;
+  slider.style.background = `linear-gradient(90deg, #ff9a9e 0%, #ff4d6d ${val}%, #f0f0f0 ${val}%)`;
+  let text = slider.parentElement.querySelector('.slider-text');
+  if(text) text.style.opacity = 1 - (val / 80); 
+  if(val == 100) {
+    createHeart(); slider.disabled = true; 
+    slider.parentElement.classList.add('unlocked');
+    setTimeout(() => {
+       document.getElementById('btn-next-game4').style.display = 'inline-block';
+       for(let i=0; i<5; i++) setTimeout(createHeart, i*100);
+       initGame5(); 
+    }, 200);
+  }
+}
+
+/* --- Game 5: HIGH-RES Wheel Logic --- */
+const rewards = [
+  "🍛 เลี้ยงข้าว 1 มื้อ",
+  "🎈 ตามใจ 1 วันเต็ม",
+  "💌 กอดฟรี 5 ครั้ง",
+  "✈️ พาไปเที่ยว!",
+  "🎥 ดูหนังด้วยกัน"
+];
+const colors = ["#FF9AA2", "#FFB7B2", "#FFDAC1", "#E2F0CB", "#B5EAD7"];
+const canvasWheel = document.getElementById("wheelCanvas");
+const ctxWheel = canvasWheel.getContext("2d");
+let wheelAngle = 0;
+let isSpinning = false;
+
+function initGame5() {
+  const dpr = window.devicePixelRatio || 2;
+  canvasWheel.width = 300 * dpr;
+  canvasWheel.height = 300 * dpr;
+  ctxWheel.scale(dpr, dpr);
+  drawWheel();
+}
+
+function drawWheel() {
+  const size = 300;
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const radius = size / 2;
+  const arc = Math.PI * 2 / rewards.length;
+
+  ctxWheel.clearRect(0, 0, size, size);
+
+  for (let i = 0; i < rewards.length; i++) {
+    const angle = i * arc + wheelAngle;
+    ctxWheel.beginPath();
+    ctxWheel.fillStyle = colors[i % colors.length];
+    ctxWheel.moveTo(centerX, centerY);
+    ctxWheel.arc(centerX, centerY, radius, angle, angle + arc);
+    ctxWheel.fill();
+    ctxWheel.strokeStyle = "white";
+    ctxWheel.lineWidth = 2;
+    ctxWheel.stroke();
+
+    ctxWheel.save();
+    ctxWheel.translate(centerX, centerY);
+    ctxWheel.rotate(angle + arc / 2);
+    ctxWheel.textAlign = "right";
+    ctxWheel.fillStyle = "#d6336c";
+    ctxWheel.font = "bold 13px Mali"; 
+    ctxWheel.shadowColor = "rgba(255,255,255,0.8)";
+    ctxWheel.shadowBlur = 2;
+    ctxWheel.fillText(rewards[i], radius - 12, 5); 
+    ctxWheel.restore();
+  }
+  
+  ctxWheel.beginPath();
+  ctxWheel.arc(centerX, centerY, 8, 0, Math.PI * 2); 
+  ctxWheel.fillStyle = "white";
+  ctxWheel.fill();
+  ctxWheel.strokeStyle = "#ff4d6d";
+  ctxWheel.lineWidth = 3;
+  ctxWheel.stroke();
+}
+
+function spinWheel(){
+  if(isSpinning) return;
+  isSpinning = true;
+  document.getElementById("spin-btn").style.opacity = '0';
+  setTimeout(() => document.getElementById("spin-btn").style.visibility = 'hidden', 300);
+  
+  let spinAdd = Math.random() * 360 + 1800;
+  let duration = 4000;
+  let start = null;
+  let initialAngle = wheelAngle;
+
+  function animate(timestamp){
+    if(!start) start = timestamp;
+    let progress = timestamp - start;
+    let easeOut = 1 - Math.pow(1 - (progress / duration), 3);
+    wheelAngle = initialAngle + (spinAdd * Math.PI / 180) * easeOut;
+    drawWheel();
+    if(progress < duration){
+      requestAnimationFrame(animate);
+    } else {
+      isSpinning = false;
+      const arc = Math.PI * 2 / rewards.length;
+      const normalizedAngle = (1.5 * Math.PI - wheelAngle) % (2 * Math.PI);
+      let index = Math.floor(normalizedAngle / arc);
+      if (index < 0) index += rewards.length;
+      
+      setTimeout(() => {
+        document.getElementById("prize-display").innerText = rewards[index];
+        document.getElementById("coupon-overlay").style.display = "flex";
+      }, 500);
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+function collectCoupon() {
+  document.getElementById("coupon-overlay").style.display = "none";
+  document.getElementById("btn-next-game5").style.display = "inline-block";
+  document.getElementById("wheelResult").innerText = "ของรางวัลที่ได้รับ: " + document.getElementById("prize-display").innerText;
+  for(let i=0; i<15; i++) setTimeout(createHeart, i*100);
+}
+
+/* --- Final Screen Logic --- */
+let noCount = 0; 
+function moveNo(e) {
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  
+  const btn = document.getElementById('no-btn');
+  if (btn.classList.contains('converted')) {
+    sayYes(); return;
+  }
+  noCount++;
+  if (noCount >= 5) {
+    btn.innerText = "ยอมแล้วจ้า...ตกลงก็ได้ 🥺💖";
+    btn.classList.add('converted');
+    btn.classList.add('btn-surrender'); 
+    btn.onmouseover = null;
+    btn.ontouchstart = null;
+    btn.onclick = sayYes;
+    btn.style.position = 'absolute';
+    btn.style.top = '100px'; 
+    btn.style.left = '50%';
+    btn.style.transform = 'translate(-50%, 0) scale(1.1)'; 
+    spawnMiniHearts(btn);
+    return;
+  }
+  const maxWidth = window.innerWidth - btn.offsetWidth - 40;
+  const maxHeight = window.innerHeight - btn.offsetHeight - 40;
+  const randomX = Math.max(20, Math.random() * maxWidth);
+  const randomY = Math.max(20, Math.random() * maxHeight);
+
+  btn.style.position = 'fixed'; 
+  btn.style.transition = 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'; 
+  btn.style.left = randomX + 'px';
+  btn.style.top = randomY + 'px';
+  
+  const texts = ["ไม่ได้หรอก 😜", "แน่จริงก็จับสิ", "ว้ายย ไม่ทัน", "คิดดูดีๆนะ", "ฮั่นแน่!"];
+  if(noCount < 5) btn.innerText = texts[noCount % texts.length];
+}
+
+function spawnMiniHearts(element) {
+  const rect = element.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  for (let i = 0; i < 15; i++) {
+    const heart = document.createElement('div');
+    heart.className = 'mini-heart-explosion';
+    heart.innerText = '💖';
+    heart.style.left = centerX + 'px';
+    heart.style.top = centerY + 'px';
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 60 + Math.random() * 80;
+    const tx = Math.cos(angle) * distance + 'px';
+    const ty = Math.sin(angle) * distance + 'px';
+    heart.style.setProperty('--tx', tx);
+    heart.style.setProperty('--ty', ty);
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 1000);
+  }
+}
+
+function sayYes() {
+  const overlay = document.getElementById('success-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('back-control').style.display = 'none';
+  for(let i=0; i<50; i++) setTimeout(() => createHeart(true), i * 60);
+}
+
+function createHeart(isFinal = false) {
+  const heart = document.createElement("div");
+  heart.innerHTML = "❤️"; 
+  heart.className = "floating-heart";
+  if (isFinal) heart.classList.add("final-heart");
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.top = "100vh";
+  heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 4000);
+}
+
+// Initial draw for fallback
+initGame5();
+</script>
+</body>
+</html>
